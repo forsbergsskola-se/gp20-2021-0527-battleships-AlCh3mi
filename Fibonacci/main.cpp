@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>  // for high_resolution_clock
 
 using namespace std;
 
@@ -10,8 +11,20 @@ int main() {
     cout << "Enter a number to Fibonacci it:";
     int input;
     cin >> input;
-    cout << "Answer: " << Fibonacci(input) << " solved by Recursion"<<endl;
+
+    auto start = std::chrono::high_resolution_clock::now();
+    cout << "Answer: " << Fibonacci(input) << " solved by Recursion"<< endl;
+    auto finish = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = finish - start;
+    cout << "(completed in " << elapsed.count() << "sec)" << endl;
+
+    cout << endl;
+
+    start = std::chrono::high_resolution_clock::now();
     cout << "Answer: " << Fib(input) << " solved by Iteration" << endl;
+    finish = std::chrono::high_resolution_clock::now();
+    elapsed = finish - start;
+    cout << "(completed in " << elapsed.count() << "sec)" << endl;
     return 0;
 }
 
