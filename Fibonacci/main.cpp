@@ -21,13 +21,13 @@ int Fibonacci(int value) {
 }
 
 int Fib(int value) {
-    int x = 0, y = 1;
+    int current = 0, next = 1;
     int tmp = 0;
 
     for (int i = 0; i < value; i++) {
-        tmp = x + y;
-        x = y;
-        y = tmp;
+        tmp = current + next;
+        current = next;
+        next = tmp;
     }
-    return x;
+    return current;
 }
