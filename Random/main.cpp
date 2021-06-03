@@ -3,25 +3,19 @@
 #include <ctime>
 
 using namespace std;
+const int Options = 20;
+int Iterations = 10000000;
+float Average = Iterations / Options;
+float AveragePercentage = (100 / Options);
 
-int iterations = 1000000;
-const int between1and = 20;
-
-
-float PercentOfTheTime(int value){
-    return ((float)value / iterations) * 100;
-}
-
-void DisplayResults(int value[]){
-    for (int i = 0; i < between1and; ++i) {
-        cout << "Number " << i + 1 << ": " << value[i] << " : " << PercentOfTheTime(value[i]) << " % of the time." << endl;
-    }
+float PercentOfTheTime(float value, float denominator){
+    return ((float)value / denominator) * 100;
 }
 
 int IndexOfLowest(int value[]){
     int index;
-    int lowestFoundValue = iterations;
-    for (int i = 0; i < between1and; ++i) {
+    int lowestFoundValue = Iterations;
+    for (int i = 0; i < Options; ++i) {
         if(value[i] < lowestFoundValue) {
             lowestFoundValue = value[i];
             index = i;
@@ -30,24 +24,10 @@ int IndexOfLowest(int value[]){
     return index;
 }
 
-int IndexOfSmallestOffset(int value[]){
-    int index;
-    float average = iterations/between1and;
-    float smallest = iterations;
-    for (int i = 0; i < between1and; ++i) {
-        if(abs(value[i] - average) < (abs(smallest) - average))
-        {
-            index = i;
-            smallest = value[i];
-        }
-    }
-    return index;
-}
-
 int IndexOfHighest(int value[]){
     int index;
     int highestFoundValue = 0;
-    for (int i = 0; i < between1and; ++i) {
+    for (int i = 0; i < Options; ++i) {
         if(value[i] > highestFoundValue) {
             highestFoundValue = value[i];
             index = i;
@@ -56,38 +36,72 @@ int IndexOfHighest(int value[]){
     return index;
 }
 
-int IndexOfGreatestOffset(int value[]){
-    float lowestOffset = abs(PercentOfTheTime(IndexOfLowest(value)) - (100/between1and));
-    float highestOffset = abs(PercentOfTheTime(IndexOfHighest(value)) - (100/between1and));
+int IndexOfSmallestOffset(int value[]){
+    int index;
+    float smallest = Iterations;
+    for (int i = 0; i < Options; ++i) {
+        if(abs(value[i] - Average) < abs(smallest - Average))
+        {
+            index = i;
+            smallest = value[i];
+        }
+    }
+    return index;
+}
 
-    if(lowestOffset > highestOffset)
-        return IndexOfLowest(value);
-    else
-        return IndexOfHighest(value);
+int IndexOfGreatestOffset(int value[]){
+    int index;
+    int greatestOffset = 0;
+    for (int i = 0; i < Options; ++i) {
+        if(abs(value[i] - Average) > greatestOffset) {
+            greatestOffset = abs(value[i] - Average);
+            index = i;
+        }
+    }
+    return index;
+}
+
+float SmallestOffset(int value[]){
+    return abs(PercentOfTheTime(value[IndexOfSmallestOffset(value)], Iterations) - AveragePercentage);
+}
+
+float AverageOffset(int value[]){
+    float avg;
+    for (int i = 0; i < Options; ++i) {
+        avg += abs(value[i] - Average);
+    }
+    return (avg / Options);
 }
 
 float GreatestOffset(int value[]){
-    return abs(PercentOfTheTime(value[IndexOfGreatestOffset(value)]) - (100/between1and));
+    return abs(value[IndexOfGreatestOffset(value)] - Average);
+}
+
+void DisplayStats(int *occurrences) {
+    cout <<endl <<"Rolling a " <<Options <<" sided dice " <<Iterations <<" times:" <<endl <<endl;
+    cout <<"Average: " <<Average <<endl;
+    cout <<"Average Percentage: " <<AveragePercentage <<endl <<endl;
+    cout <<IndexOfLowest(occurrences)+1 <<" occurred the least." <<endl;
+    cout <<IndexOfHighest(occurrences)+1 <<" occurred the most." <<endl;
+    cout <<"Minimum offset: Number " <<IndexOfSmallestOffset(occurrences) + 1 <<" (" <<SmallestOffset(occurrences) <<"%)" <<endl;
+    cout <<"Maximum offset: Number " <<IndexOfGreatestOffset(occurrences) + 1 <<" (" <<PercentOfTheTime(GreatestOffset(occurrences), Iterations) <<"%)" <<endl;
+    cout <<"Average Offset: " <<(AverageOffset(occurrences) / Average) <<"%" <<endl;
+}
+
+void DisplayResults(int value[]){
+    for (int i = 0; i < Options; ++i) {
+        cout <<"Number " <<i+1 <<": "<< value[i] <<" times ("<< PercentOfTheTime(value[i], Iterations) <<"%)" <<endl;
+    }
+    DisplayStats(value);
 }
 
 int main() {
-
-    int occurrences[between1and] {};
+    int occurrences[Options] {};
 
     srand(time(0));
-
-    for (int i = 0; i < iterations; ++i)
-        occurrences[rand() % between1and]++;
+    for (int i = 0; i < Iterations; ++i)
+        occurrences[rand() % Options]++;
 
     DisplayResults(occurrences);
-
-    cout << IndexOfLowest(occurrences)+1 << " occurred the least." << endl;
-    cout << IndexOfHighest(occurrences)+1 << " occurred the most." << endl;
-
-
-    cout << "Maximum offset: Number " << IndexOfGreatestOffset(occurrences) + 1 << " (" << GreatestOffset(occurrences) << "%)" << endl;
-    cout << "Minimum offset: Number " << IndexOfSmallestOffset(occurrences) + 1 << " (" << occurrences[IndexOfSmallestOffset(occurrences)]/iterations << "%)" << endl;
     return 0;
 }
-
-
