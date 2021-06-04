@@ -1,6 +1,6 @@
 #include <iostream>
 
-enum CellState{ EMPTY, OCCUPIED, DESTROYED };
+enum CellState{ EMPTY, OCCUPIED, DESTROYED, MISS };
 
 class Coordinate{
 public:
@@ -59,6 +59,9 @@ public:
                         break;
                     case DESTROYED:
                         output = 'X';
+                        break;
+                    case MISS:
+                        output = '@';
                 }
                 std::cout <<output <<"|";
             }
@@ -102,6 +105,7 @@ public:
             ShipsRemaining--;
             return true;
         }
+        grid.Board[x][y].State = MISS;
         return false;
     }
 
@@ -154,8 +158,8 @@ int main() {
         std::cout <<"Player " <<player1.Name <<"'s Turn:" <<std::endl;
         ShootAt(player2);
         if(player2.ShipsRemaining <= 0) {
-            std::cout << "Player " << player1.Name << "wins!" << std::endl;
             player1.grid.ShowGrid(false);
+            std::cout <<"Player " << player1.Name << "wins!" << std::endl;
             std::cout <<"Player " <<player1.Name <<"'s board at the end of the game." <<std::endl;
             break;
         }
@@ -164,8 +168,8 @@ int main() {
         std::cout <<"Player " <<player2.Name <<"'s Turn:" <<std::endl;
         ShootAt(player1);
         if(player1.ShipsRemaining <= 0) {
-            std::cout << "Player " << player2.Name << "wins!" << std::endl;
             player2.grid.ShowGrid(false);
+            std::cout <<"Player " << player2.Name << "wins!" << std::endl;
             std::cout <<"Player " <<player2.Name <<"'s board at the end of the game." <<std::endl;
             break;
         }
