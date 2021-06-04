@@ -3,6 +3,7 @@
 #include <ctime>
 
 using namespace std;
+
 const int Options = 20;
 int Iterations = 10000000;
 float Average = Iterations / Options;
@@ -79,8 +80,6 @@ float GreatestOffset(int value[]){
 
 void DisplayStats(int *occurrences) {
     cout <<endl <<"Rolling a " <<Options <<" sided dice " <<Iterations <<" times:" <<endl <<endl;
-    cout <<"Average: " <<Average <<endl;
-    cout <<"Average Percentage: " <<AveragePercentage <<endl <<endl;
     cout <<IndexOfLowest(occurrences)+1 <<" occurred the least." <<endl;
     cout <<IndexOfHighest(occurrences)+1 <<" occurred the most." <<endl;
     cout <<"Minimum offset: Number " <<IndexOfSmallestOffset(occurrences) + 1 <<" (" <<SmallestOffset(occurrences) <<"%)" <<endl;
@@ -90,7 +89,7 @@ void DisplayStats(int *occurrences) {
 
 void DisplayResults(int value[]){
     for (int i = 0; i < Options; ++i) {
-        cout <<"Number " <<i+1 <<": "<< value[i] <<" times ("<< PercentOfTheTime(value[i], Iterations) <<"%)" <<endl;
+        cout <<"Number " <<i+1 <<": "<<value[i] <<" times ("<<PercentOfTheTime(value[i], Iterations) <<"%)" <<endl;
     }
     DisplayStats(value);
 }
